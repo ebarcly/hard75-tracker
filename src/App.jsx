@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHard75Data } from "./hooks/useHard75Data";
 import { calculateProgress } from "./utils/calculations";
-import Header from "./components/Header";
-import StatsBar from "./components/StatsBar";
-import TaskGrid from "./components/TaskGrid";
-import WeeklyOverview from "./components/WeeklyOverview";
-import DeveloperTips from "./components/DeveloperTips";
-import MotivationalQuote from "./components/MotivationalQuote";
+import MobileHeader from "./components/MobileHeader";
+import MobileStats from "./components/MobileStats";
+import MobileProgress from "./components/MobileProgress";
+import MobileTaskList from "./components/MobileTaskList";
+import MobileWeekView from "./components/MobileWeekView";
+import MobileNavigation from "./components/MobileNavigation";
+import TabNavigation from "./components/TabNavigation";
 import "./App.css";
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
     navigateToDay,
     resetChallenge,
   } = useHard75Data();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeTab, setActiveTab] = useState("today");
 
   const { completedTasks, totalTasks, progressPercentage, isDayComplete } =
     calculateProgress(dailyTasks);
@@ -52,7 +56,7 @@ function App() {
   const handleReset = () => {
     if (
       window.confirm(
-        "Are you sure you want to reset your Hard 75 challenge? This will clear all progress."
+        "Reset your Hard 75 challenge? This will clear all progress."
       )
     ) {
       resetChallenge();
@@ -60,50 +64,50 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-      <div className="max-w-4xl mx-auto">
-        <Header />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <MobileHeader
+        showMenu={showMenu}
+        setShowMenu={setShowMenu}
+        onReset={handleReset}
+      />
 
-        <StatsBar
-          currentDay={currentDay}
-          streak={streak}
-          completedTasks={completedTasks}
-          totalTasks={totalTasks}
-          progressPercentage={progressPercentage}
-          isDayComplete={isDayComplete}
-        />
+      <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        {/* Day Navigation */}
-        <div className="flex justify-center gap-4 mb-8">
-          <button
-            onClick={goToPrevDay}
-            disabled={currentDay <= 1}
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg border border-white/20 transition-colors"
-          >
-            ← Previous Day
-          </button>
-          <button
-            onClick={goToNextDay}
-            disabled={currentDay >= 75 || !isDayComplete}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-          >
-            Next Day →
-          </button>
-        </div>
+      {/* Main Content */}
+      <div className="px-4 pb-6">
+        {activeTab === "today" ? (
+          <>
+            <MobileStats currentDay={currentDay} streak={streak} />
+            <MobileProgress
+              completedTasks={completedTasks}
+              totalTasks={totalTasks}
+              progressPercentage={progressPercentage}
+              isDayComplete={isDayComplete}
+            />
+            <MobileNavigation
+              currentDay={currentDay}
+              isDayComplete={isDayComplete}
+              onPrevDay={goToPrevDay}
+              onNextDay={goToNextDay}
+            />
+            <MobileTaskList
+              dailyTasks={dailyTasks}
+              onTaskToggle={handleTaskToggle}
+            />
+          </>
+        ) : (
+          <MobileWeekView currentDay={currentDay} allDays={allDays} />
+        )}
+      </div>
 
-        <TaskGrid dailyTasks={dailyTasks} onTaskToggle={handleTaskToggle} />
-        <WeeklyOverview currentDay={currentDay} allDays={allDays} />
-        <DeveloperTips />
-        <MotivationalQuote />
-
-        {/* Reset Button */}
-        <div className="text-center">
-          <button
-            onClick={handleReset}
-            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-          >
-            Reset Challenge
-          </button>
+      {/* Mobile Quote/Tip */}
+      <div className="px-4 pb-8">
+        <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <p className="text-white text-sm font-medium mb-1">💡 Daily Tip</p>
+          <p className="text-purple-200 text-xs leading-relaxed">
+            "Discipline is choosing between what you want now and what you want
+            most."
+          </p>
         </div>
       </div>
     </div>
