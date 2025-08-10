@@ -8,7 +8,6 @@ import MobileTaskList from "./components/MobileTaskList";
 import MobileWeekView from "./components/MobileWeekView";
 import MobileNavigation from "./components/MobileNavigation";
 import TabNavigation from "./components/TabNavigation";
-import "./App.css";
 
 function App() {
   const {
