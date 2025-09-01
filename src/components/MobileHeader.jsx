@@ -28,7 +28,7 @@ const MobileHeader = ({ showMenu, setShowMenu, onReset }) => {
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setShowMenu(false)}
         >
-          <div className="absolute top-20 right-4 bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
             <button
               onClick={() => {
                 onReset();
